@@ -1,0 +1,126 @@
+---
+title: Gender pay gap
+author:
+  - name: Edwin Montoya
+    affil: 1
+    twitter: emonto15
+    email: montoyae@mail.gvsu.edu
+    main: true
+  - name: Matthew Hendrick
+    affil: 1
+    twitter: blah
+    email: hendrmat@mail.gvsu.edu
+    main: true
+affiliation:
+  - num: 1
+    address: Data Science & Analytics Masters' Program, GVSU
+main_findings:
+  - "**Female students** are nearly as likely to be hired into professional positions as **male students**, the **pay gap is unfortunately not so narrow**"
+  - '![](https://internationalbanker.com/wp-content/uploads/2019/07/Gender-Pay-Gap-1170x650.jpg){.main_pic}'
+logoleft_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png){.main-img-left}'
+logoright_name: '![](https://raw.githubusercontent.com/dykesb/lakeR-sticker/master/lakeR-sicker.png){.main-img-right}'
+output: 
+  posterdown::posterdown_betterland:
+    self_contained: false
+    pandoc_args: --mathjax
+    highlight: haddock
+    number_sections: false
+link-citations: true
+primary_colour: '#2b9da7'
+secondary_color: '#e3fdfe'
+accent_color: '#55b0c0'
+bibliography: packages.bib
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(results = 'asis',
+                      echo = FALSE,
+                      warning = FALSE,
+                      tidy = FALSE,
+                      message = FALSE,
+                      fig.align = 'center',
+                      out.width = "100%")
+options(knitr.table.format = "html")
+```
+
+```{r}
+library(tidyverse)
+library(kableExtra)
+library(ggplot2)
+```
+
+```{r}
+theme_set(theme_bw())
+options(scipen=10000)
+```
+
+### Introduction
+
+“An honest day’s work for an honest day’s pay”. This is a phrase that many of us have heard growing up through the years, meaning that your efforts will be rewarded with appropriate pay. However, as we grow older, we come to realize that this is not necessarily the case. Particularly, women have historically been paid less than men for doing essentially the same job. With the help of statistical analysis, we have become more aware of the details behind the pay gap.
+
+```{r, include=FALSE}
+knitr::write_bib(c('posterdown', 'rmarkdown','pagedown'), 'packages.bib')
+```
+
+### Exploratory Data Analysis
+
+```{r}
+students <- read.csv('../data/students.csv')
+inc_occ <- read.csv('../data/inc_occ_gender.csv', na.strings=c("Na")) %>%
+  filter(!is.na(All_weekly) & !is.na(M_weekly) & !is.na(F_weekly))
+```
+
+```{r, fig.cap="Salary distribution for each gender"}
+students %>%
+  ggplot(aes(gender,salary)) +
+  geom_boxplot(fill = "#008080") +
+  labs(title="Salary distribution",subtitle="by gender")
+```
+
+It is noticeable that women has a lower weekly wage compared to men.
+
+```{r}
+inc_occ %>%
+  .[-1,] %>%
+  mutate(
+    female_male_ratio = F_workers/All_workers * 100,
+    female_male_pay_difference_ratio = (F_weekly-M_weekly)/M_weekly * 100
+  ) %>%
+  select(Occupation,female_male_ratio,female_male_pay_difference_ratio) %>%
+  arrange(desc(female_male_ratio)) %>%
+  head(10) %>%
+  kable(caption="Top 10 female-dominated occupations") %>%
+  kable_styling(bootstrap_options = c("striped", "compact"))
+```
+
+Even in occupations dominated by women, they still get paid less than men.
+
+Not only wage is an issue, there is also a huge gap on education
+
+```{r}
+students %>%
+  ggplot() +
+    geom_bar(aes(hsc_s, fill = gender),position="dodge") +
+    labs(title="High school specialization",
+         subtitle="by gender",
+         x="High school specialization") +
+  scale_fill_manual("gender", values = c("F" = "#247394", "M" = "#46B5A9"))
+```
+
+Most `High School Specializations` are **dominated by men**.
+
+```{r}
+students %>%
+  ggplot() +
+    geom_point(aes(x=etest_p,y=salary,color=gender)) +
+    labs(title="Employability test percentage compared to salaries",
+         subtitle="by gender",
+         x="Employability test percentage") +
+    scale_color_manual("gender", values = c("F" = "#247394", "M" = "#98DAAE"))
+```
+
+Not even more qualified women gets better salaries. Even, out of the 6 outstanding salaries, only one is women, and had way higher `employability test percentage` than the others.
+
+# Conclusion
+
+We saw that while female students are nearly as likely to be hired into professional positions as male students, the pay gap is unfortunately not so narrow. Through analyzing the data, we conclude that these female students encounter the same problems as their professional counterparts when it comes to compensation.  While MBA degree progression is also a key factor in determining starting salary, that is at least an objective measure of education.
