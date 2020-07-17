@@ -8,7 +8,7 @@ author:
     main: true
   - name: Matthew Hendrick
     affil: 1
-    twitter: blah
+    twitter: omnimirror
     email: hendrmat@mail.gvsu.edu
     main: true
 affiliation:
@@ -17,7 +17,7 @@ affiliation:
 main_findings:
   - "**Female students** are nearly as likely to be hired into professional positions as **male students**, the **pay gap is unfortunately not so narrow**"
   - '![](https://internationalbanker.com/wp-content/uploads/2019/07/Gender-Pay-Gap-1170x650.jpg){.main_pic}'
-logoleft_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png){.main-img-left}'
+logoleft_name: '![](qr.png){.main-img-left}'
 logoright_name: '![](https://raw.githubusercontent.com/dykesb/lakeR-sticker/master/lakeR-sicker.png){.main-img-right}'
 output: 
   posterdown::posterdown_betterland:
@@ -83,12 +83,12 @@ It is noticeable that women has a lower weekly wage compared to men.
 inc_occ %>%
   .[-1,] %>%
   mutate(
-    female_male_ratio = F_workers/All_workers * 100,
-    female_male_pay_difference_ratio = (F_weekly-M_weekly)/M_weekly * 100
+    pct_female = F_workers/All_workers * 100,
+    pct_female_pay_diff = (F_weekly-M_weekly)/M_weekly * 100
   ) %>%
-  select(Occupation,female_male_ratio,female_male_pay_difference_ratio) %>%
-  arrange(desc(female_male_ratio)) %>%
-  head(10) %>%
+  select(Occupation,pct_female,pct_female_pay_diff) %>%
+  arrange(desc(pct_female)) %>%
+  head(5) %>%
   kable(caption="Top 10 female-dominated occupations") %>%
   kable_styling(bootstrap_options = c("striped", "compact"))
 ```
@@ -123,4 +123,4 @@ Not even more qualified women gets better salaries. Even, out of the 6 outstandi
 
 # Conclusion
 
-We saw that while female students are nearly as likely to be hired into professional positions as male students, the pay gap is unfortunately not so narrow. Through analyzing the data, we conclude that these female students encounter the same problems as their professional counterparts when it comes to compensation.  While MBA degree progression is also a key factor in determining starting salary, that is at least an objective measure of education.
+We saw that while female students are nearly as likely to be hired into professional positions as male students, the pay gap is unfortunately not so narrow. Through analyzing the data, we conclude that these female students encounter the same problems as their professional counterparts when it comes to compensation.  While it is outside the scope of this project to determine the exact reason for this ongoing problem, it is clear that there is an underlying issue that must be addressed, and other nations may benefit from adopting similar transparency laws to Great Britain, in which larger companies must reveal their salary distributions annually.
